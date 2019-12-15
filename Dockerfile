@@ -1,13 +1,14 @@
 FROM alpine
 
-MAINTAINER Christoph Wiechert <wio@psitrax.de>
-
 ENV REFRESHED_AT="2019-10-18"\
     ICINGAWEB_VERSION="2.7.3" \
     DIRECTOR_VERSION="1.7.1" \
     CUBE_VERSION="1.1.0" \
     GRAFANA_VERSION="1.3.6" \
     BUSINESSPROCESS_VERSION="2.2.0" \
+    INCUBATOR_VERSION="v0.3.0" \
+    IPL_VERSION="v0.4.0" \
+    REACTBUNDLE_VERSION="v0.6.0" \
     TIMEZONE="UTC" \
     ICINGAWEB_AUTOCONF=true \
     DIRECTOR_INSERT_DEFAULTS=true \
@@ -25,7 +26,8 @@ ENV REFRESHED_AT="2019-10-18"\
     IDO_DB="icinga2" \
     DIRECTOR_DB="director"
 
-RUN apk add --no-cache \
+RUN set -x && \
+    apk add --no-cache \
       mysql-client \
       ca-certificates openssl \
       php7 php7-apache2 php7-pdo_mysql php7-openssl php7-intl php7-ldap php7-gettext \
@@ -52,6 +54,18 @@ RUN apk add --no-cache \
     mkdir -p /icingaweb2/modules/grafana && \
     wget -q -O - https://github.com/Mikesch-mp/icingaweb2-module-grafana/archive/v${GRAFANA_VERSION}.tar.gz \
       | tar xz --strip 1 -C /icingaweb2/modules/grafana --strip 1 && \
+    echo "Fetch Module Incubator ${INCUBATOR_VERSION}" && \
+    mkdir -p /icingaweb2/modules/incubator && \
+    wget -q -O - https://github.com/Icinga/icingaweb2-module-incubator/archive/${INCUBATOR_VERSION}.tar.gz \
+      | tar xz --strip 1 -C /icingaweb2/modules/incubator --strip 1 && \
+    echo "Fetch Module IPL ${IPL_VERSION}" && \
+    mkdir -p /icingaweb2/modules/ipl && \
+    wget -q -O - https://github.com/Icinga/icingaweb2-module-ipl/archive/${IPL_VERSION}.tar.gz \
+      | tar xz --strip 1 -C /icingaweb2/modules/ipl --strip 1 && \
+    echo "Fetch Module Reactbundle ${REACTBUNDLE_VERSION}" && \
+    mkdir -p /icingaweb2/modules/reactbundle && \
+    wget -q -O - https://github.com/Icinga/icingaweb2-module-reactbundle/archive/${REACTBUNDLE_VERSION}.tar.gz \
+      | tar xz --strip 1 -C /icingaweb2/modules/reactbundle --strip 1 && \
     chown -R apache /icingaweb2 && \
     mkdir -p /var/log/icingaweb2 && \
     chown -R apache /var/log/icingaweb2
